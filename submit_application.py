@@ -115,6 +115,10 @@ def main():
         return 1
 
     receipt = response.get("receipt")
+    if not receipt:
+        print(f"submission failed: response did not include a receipt {response}", file=sys.stderr)
+        return 1
+
     print(f"receipt: {receipt}")
     return 0
 

@@ -31,10 +31,3 @@ To submit an application, create the following Python script that is executed vi
 - If the POST is successful, you will receive an HTTP 200 with a response of '{"success": true, "receipt": "your-submission-receipt"}'
 - Print that receipt in your continuous integration task
 
-
-
-
-
-# My stuff
-
-- link to resume `meatbagoverclocked.com/super-secret-b12-resume/resume.pdf`

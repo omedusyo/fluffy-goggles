@@ -1,0 +1,23 @@
+name: Submit B12 application
+
+on:
+  workflow_dispatch:
+
+jobs:
+  submit-b12:
+    runs-on: ubuntu-latest
+    env:
+      B12_SUBMISSION_URL: https://b12.io/apply/submission
+      B12_SIGNING_SECRET: hello-there-from-b12
+      B12_NAME: Jurij Dupyn
+      B12_EMAIL: yuriy.dupyn@gmail.com
+      B12_RESUME_LINK: https://meatbagoverclocked.com/super-secret-b12-resume/resume.pdf
+      B12_REPOSITORY_LINK: https://github.com/omedusyo/fluffy-goggles
+      B12_ACTION_RUN_LINK: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Submit application
+        run: python submit_application.py
