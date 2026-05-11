@@ -1,0 +1,48 @@
+name: Test B12 submission
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-submission:
+    runs-on: ubuntu-latest
+    env:
+      B12_MOCK_PORT: "8123"
+      B12_SUBMISSION_URL: http://127.0.0.1:8123/apply/submission
+      B12_SIGNING_SECRET: hello-there-from-b12
+      B12_NAME: Jurij Dupyn
+      B12_EMAIL: yuriy.dupyn@gmail.com
+      B12_RESUME_LINK: https://meatbagoverclocked.com/super-secret-b12-resume/resume.pdf
+      B12_REPOSITORY_LINK: https://github.com/omedusyo/fluffy-goggles
+      B12_ACTION_RUN_LINK: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Start mock server
+        run: |
+          python -u mock_b12_server.py > mock-server.log 2>&1 &
+          echo "$!" > mock-server.pid
+
+          for attempt in $(seq 1 50); do
+            if python -c "import os, socket; socket.create_connection(('127.0.0.1', int(os.environ['B12_MOCK_PORT'])), 1).close()" 2>/dev/null; then
+              exit 0
+            fi
+            sleep 0.1
+          done
+
+          echo "mock server did not start"
+          cat mock-server.log
+          exit 1
+
+      - name: Submit application payload
+        run: python submit_application.py
+
+      - name: Print mock server log
+        if: always()
+        run: cat mock-server.log || true
+
+      - name: Stop mock server
+        if: always()
+        run: kill "$(cat mock-server.pid)" || true

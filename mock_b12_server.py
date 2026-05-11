@@ -2,13 +2,14 @@
 import hashlib
 import hmac
 import json
+import os
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
 
 
-HOST = "127.0.0.1"
-PORT = 8000
+HOST = os.environ.get("B12_MOCK_HOST", "127.0.0.1")
+PORT = int(os.environ.get("B12_MOCK_PORT", "8000"))
 PATH = "/apply/submission"
 SIGNING_SECRET = b"hello-there-from-b12"
 REQUIRED_KEYS = {
